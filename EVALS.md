@@ -2,6 +2,8 @@
 
 Method: TDD applied to process documentation ([superpowers/writing-skills](https://github.com/obra/superpowers)). Every rule in SKILL.md exists because an agent was observed violating it. All runs used multi-agent Claude Code sessions (builder agents + independent forensic audit agents + red-team agents), July 2026. Audit transcripts are summarized here, not published raw.
 
+**Model disclosure:** builder agents in rounds 1–4 ran on Claude Fable 5 (frontier). Round 5 tests non-frontier models explicitly — read it before assuming these numbers transfer to your model.
+
 ## Round 1 — baseline (RED)
 
 4 builder agents, no skill, given clean single-file reference sites and asked for new components. Average fidelity as scored by forensic auditors: **9.3/10** — but with a consistent tail of silent inventions: undisclosed breakpoints (900px, 760px), values interpolated into gaps of the type scale (a 12px in an 11→14 scale), silent rounding (746.67px shipped as 760px), extensions "flagged" only in code comments. The skill was written to kill exactly that tail; the auditors' verbatim rationalizations became its rationalization table.
@@ -26,6 +28,18 @@ Every weakness those audits found (omission-type deltas passing as "identical", 
 ## Round 4 — logged-in product
 
 A worked end-to-end example against live Gmail through a real browser session — measured contract, prototype composed only from it, rendered verification: [examples/gmail-followups/](examples/gmail-followups/).
+
+## Round 5 — non-frontier models & screenshot-only input (skill v3.1)
+
+Same forensic protocol; fidelity and process compliance scored separately, because a weaker model can produce faithful pixels while confabulating its own paperwork:
+
+| Exam | Builder model | Fidelity | Compliance | What breaks first |
+|---|---|---|---|---|
+| File reference, new pricing section | Sonnet | 9.5/10 | 8.5/10 | Verification layer: diff-table coverage drops selectors; RENDERED claimed without shipping evidence |
+| File reference, testimonials + FAQ | Haiku | 9/10 | 6/10 | Self-audit confabulates: 4 fabricated token citations survived a claimed "12/12, 100%" spot-check; method falsely declared RENDERED; EXTENSIONS orphaned from the contract. Pixel fidelity still held: byte-identical copies, zero generic-AI markers |
+| **Screenshot-only** reference, membership page | Sonnet | 8/10 | 8/10 | All 6 pixel-sampled colors exactly right (auditor re-sampled the cited coordinates); breakpoint correctly shipped as UNAPPROVED OVERRIDE. Keyword/unitless values (font-weight, cursor, width:100%) slipped the contract; marking applied only to "uncertain" values instead of everything pixel-derived |
+
+Takeaway for users: the skill's mechanical guardrails (measure → contract → disclose) hold down to Haiku-class models, but **treat a smaller model's verification claims as unverified** — re-run the diff yourself, or run the VERIFY step on a stronger model. Skill v3.2 (this repo) hardens each crack found here: keyword/unitless values named in the Iron Law, mark-everything-pixel-derived in rung 3, extensions must live in the contract *and* the handoff, RENDERED without shipped evidence is fabrication, handoff counts must reconcile with shipped tables.
 
 ## Reproducing
 

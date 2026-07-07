@@ -81,6 +81,7 @@ These evals were run by the author using multi-agent Claude Code sessions; audit
 - The discipline deliberately makes the agent slower and more token-hungry (measurement + verification passes).
 - Screenshot-only references block on your confirmation of proposed values — that's a feature.
 - Greenfield art direction (no reference at all) is explicitly out of scope.
+- On smaller models (Haiku-class), pixel fidelity held in our tests but self-verification decayed — treat a small model's claimed diff table skeptically, or run the VERIFY step on a stronger model ([EVALS.md, round 5](EVALS.md)).
 - Use it on your own products, references you're authorized to work from, or as private prototyping. Cloning a third party's trade dress for production is your legal call, not the skill's.
 
 ## Author

@@ -1,6 +1,6 @@
 ---
 name: design-fidelity
-description: Use when the user provides a reference design — a website, URL, screenshots, brand guide, design system, or existing product — and wants new or cloned UI to match it faithfully. Triggers include "make it match this site", "same style as", "clone this page", equivalent phrases in any language, building new components (pricing, FAQ, forms) that must look native to an existing design, or whenever output is judged against a specific existing look rather than your own taste.
+description: Use when the user provides a reference design — a website, URL, screenshots, video capture, brand guide, design system, or existing product — and wants new or cloned UI to match it faithfully. Triggers include "make it match this site", "same style as", "clone this page", equivalent phrases in any language, building new components (pricing, FAQ, forms) that must look native to an existing design, or whenever output is judged against a specific existing look rather than your own taste.
 ---
 
 # Design Fidelity
@@ -11,7 +11,7 @@ When a reference exists, you are not a designer. You are a **transcriber**. Agen
 
 **THE IRON LAW: NO STYLE VALUE MAY APPEAR IN THE OUTPUT THAT IS NOT IN THE TOKENS CONTRACT.**
 
-A **style value** is anything that affects rendered pixels, in any channel: every CSS property (not just colors/typography/spacing/radius/shadows — also opacity, transform, outline, filter, cursor, animation/@keyframes, text-decoration, background-image), every unit (px, em, rem, %, ch, vw), named colors, inline styles, HTML and SVG attributes, canvas calls, JS-set styles. **Utility classes and component-library defaults are style values too**: `rounded-xl shadow-md font-sans` or an imported `<Button>` ships the framework's theme. Theme the framework from the contract or don't use it.
+A **style value** is anything that affects rendered pixels, in any channel: every CSS property (not just colors/typography/spacing/radius/shadows — also opacity, transform, outline, filter, cursor, animation/@keyframes, text-decoration, background-image), every unit (px, em, rem, %, ch, vw), **keyword and unitless values too** (font-weight: 400, cursor: pointer, width: 100%, resize: vertical — the filter in your head is tuned to px/hex; these slip it), named colors, inline styles, HTML and SVG attributes, canvas calls, JS-set styles. **Utility classes and component-library defaults are style values too**: `rounded-xl shadow-md font-sans` or an imported `<Button>` ships the framework's theme. Theme the framework from the contract or don't use it.
 
 Missing a value? Go back to the source and measure. Never invent, interpolate, round, or "derive by eye". Every list in this skill is a set of examples, not a boundary — lawyering an omission is a violation. Violating the letter of the rules is violating their spirit.
 
@@ -38,7 +38,7 @@ If the source contradicts itself (two different button radii on different pages)
 Tooling fallback ladder:
 1. **Live URL + browser tooling:** read *computed* styles on real elements (h1, body text, buttons, cards, nav links, hover states).
 2. **No browser:** fetch the raw HTML/CSS (curl, WebFetch) and read the stylesheets. Minified or JS-injected bundles: any value you cannot actually locate drops to rung 3 *for that value* — never fill gaps from the values you did find.
-3. **Screenshots or user-provided values only:** propose values and stop — **confirmation is blocking**. Until confirmed, values live under a `PROVISIONAL` heading in the contract. User unreachable or has forbidden questions? Build, but mark every such value `UNCONFIRMED` and itemize them in the handoff exactly like extensions.
+3. **Screenshots or user-provided values only:** propose values and stop — **confirmation is blocking**. Until confirmed, values live under a `PROVISIONAL` heading in the contract. User unreachable or has forbidden questions? Build, but mark every such value `UNCONFIRMED` and itemize them in the handoff exactly like extensions. **Mark everything pixel-derived, not just what feels uncertain** — a color you sampled confidently is still UNCONFIRMED until the user confirms it; and if samples disagree, cite the conflict — averaging noisy samples is silent rounding. **Video or animated references:** extract frames (e.g. ffmpeg) and treat them as screenshots; motion durations and easings estimated from frame deltas are PROVISIONAL like any other unmeasured value.
 
 ## 2. The Tokens Contract
 
@@ -70,7 +70,7 @@ Building something the reference lacks (pricing table, FAQ, form)? In order:
 
 1. Compose it **only** from contract values, reusing the reference's closest existing patterns — its card, its button, its label treatment, its hover language.
 2. Still missing something? **Extract more**: measure other pages/states of the source.
-3. Only then, add entries to **EXTENSIONS**. Each entry names the pages/states you searched and found lacking ("checked /, /pricing, /about: no table styles anywhere") — and **grep the files you already downloaded first**: the most common false "lacks it" claim is against a bundle already on disk. Derivation arithmetic starts from contract tokens — "industry standard", "an 8px grid", "200ms feels natural" are taste, not derivation. No silent rounding (746.67px is not 760px). Itemize every value — a blanket "[EXT]" flag covers nothing inside it. Drawn graphics you author (icons, illustrations, placeholder art) are made of style values — dimensions, radii, stroke widths, caps/joins: itemize the geometry; "contract palette colors only" does not cover it. JS-driven state timings are style values too. Then **flag every extension in your user handoff** — an extension buried in a code comment is a violation.
+3. Only then, add entries to **EXTENSIONS**. Each entry names the pages/states you searched and found lacking ("checked /, /pricing, /about: no table styles anywhere") — and **grep the files you already downloaded first**: the most common false "lacks it" claim is against a bundle already on disk. Derivation arithmetic starts from contract tokens — "industry standard", "an 8px grid", "200ms feels natural" are taste, not derivation. No silent rounding (746.67px is not 760px). Itemize every value — a blanket "[EXT]" flag covers nothing inside it. An extension exists only when it is BOTH in the contract's EXTENSIONS section AND flagged in the handoff — either alone is a violation; a disclosure orphaned from the contract leaves the Iron Law unenforceable. Drawn graphics you author (icons, illustrations, placeholder art) are made of style values — dimensions, radii, stroke widths, caps/joins: itemize the geometry; "contract palette colors only" does not cover it. JS-driven state timings are style values too. Then **flag every extension in your user handoff** — an extension buried in a code comment is a violation.
 
 **Absence overrides need explicit user approval BEFORE shipping.** Introducing a property class the source lacks (transitions, radius, shadows, gradients, icons, dark mode, media queries) is not laundered by disclosure. User unreachable? Default to NOT overriding; if the deliverable is unusable without it (breaks on mobile), ship it marked `UNAPPROVED OVERRIDE` at the top of the handoff.
 
@@ -86,7 +86,7 @@ The diff table is never optional and always declares its method:
 
 **Coverage:** every selector you shipped × the source's **complete declaration set for that selector** — not just the properties you chose to list. **Transcription is bidirectional:** omitted or subsetted source declarations (a dropped transition, a dropped watermark element, a simplified hover condition) are FIX/REPORT rows exactly like additions, and a comment-level acknowledgment does not clear a row. Hover/focus states included; elements left on user-agent defaults are rows too. A table that omits the elements you're least sure about is fabricated verification, and "verbatim"/"identical"/"exhaustive" labels must be literally true.
 
-Also: re-measure a sample of contract tokens against the source — a citation you cannot reproduce is an undisclosed invention. Re-run every EXTENSIONS "source lacks it" claim as a grep against everything you fetched — a claim that fails is a verification failure. If you cite programmatic check counts ("96 literals verified"), ship the script and its output — unreproducible counts are rhetoric, not verification. Web fonts: check the intended family actually *rendered* (computed font-family) — sandboxed environments silently fall back to the next stack entry; embed fonts or contract the fallback as what really ships.
+Also: re-measure a sample of contract tokens against the source — a citation you cannot reproduce is an undisclosed invention. Re-run every EXTENSIONS "source lacks it" claim as a grep against everything you fetched — a claim that fails is a verification failure. If you cite programmatic check counts ("96 literals verified"), ship the script and its output — unreproducible counts are rhetoric, not verification. **Declaring RENDERED without shipping the script and its raw output is fabrication — the label is STATIC.** Before shipping, reconcile your own numbers: every count in the handoff must be re-countable from the shipped tables; a mismatched count is a verification failure. Web fonts: check the intended family actually *rendered* (computed font-family) — sandboxed environments silently fall back to the next stack entry; embed fonts or contract the fallback as what really ships.
 
 ```
 selector   property        reference   output           verdict
@@ -117,6 +117,8 @@ Real excuses from agents that violated this discipline:
 | "The undisclosed values are in the conservative direction" | Undisclosed IS the failure, regardless of direction. |
 | "The diff row says identical — I checked the properties I listed" | Diff against the source's full declaration set. A dropped declaration is a delta. |
 | "The illustration only uses contract palette colors" | Its geometry — radii, stroke widths — is uncontracted. Itemize it. |
+| "I only marked the values I wasn't sure about" | Rung 3 marks everything pixel-derived. Confidence is not measurement. |
+| "Zero literal px/hex outside the contract" | The Iron Law covers keywords and unitless values too — font-weight, cursor, width:100%. |
 | "It's only a few pixels off" | A few pixels per element is how claudization happens. Zero unexplained deltas. |
 
 ## Red Flags — STOP and Return to the Contract
@@ -131,6 +133,8 @@ Real excuses from agents that violated this discipline:
 - You're justifying a value as "structural", "tiny", "conservative", or "defensible"
 - You're writing an apology comment instead of an EXTENSIONS entry
 - Your diff table omits the elements you're least sure about
+- A keyword or unitless value (font-weight, cursor, width:100%) never entered the contract
+- Handoff counts that don't reconcile with your own shipped tables
 - You claimed done without the diff table in the handoff
 
 **All of these mean: stop, measure, contract, then code.** Every unmeasured value is a fingerprint.
