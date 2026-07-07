@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seguimientos — prototipo (sistema Gmail)</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+/* Every declaration resolves to tokens.css; [E#] marks EXTENSIONS entries. */
+body {
+  margin: 0;                                   /* [E1] scaffold reset */
+  background: var(--bg-app);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  padding: 24px;                               /* [E1] */
+}
+.card {
+  background: var(--surface-card);
+  border-radius: var(--radius-card);
+  max-width: var(--card-w);
+  margin: 0 auto;                              /* [E1] centering */
+  overflow: hidden;                            /* [E1] — see REPORT: .nH overflow re-measured in verify */
+}
+.panel-head {
+  display: flex;                               /* [E2] head layout */
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;                               /* [E1] */
+}
+.panel-head h1 {
+  margin: 0;                                   /* [E2] */
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);                   /* [E2] 16px + 700 combination */
+  font-weight: var(--fw-bold);
+  color: var(--ink);
+}
+.btn-primary {
+  display: inline-flex;                        /* [E4] */
+  align-items: center;
+  height: var(--h-btn-primary);
+  padding: 0 var(--btn-pad-r);                 /* [E4] symmetric: no icon slot */
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-row);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-compose);
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: var(--t-btn);
+  user-select: none;                           /* [E4] div-button scaffold */
+}
+.btn-primary:hover {
+  /* verbatim .z0>.L3:hover recipe */
+  box-shadow: var(--hover-shadow-a) 0px 1px 3px 0px, var(--hover-shadow-b) 0px 4px 8px 3px;
+  background-color: var(--btn-primary-bg);
+}
+.btn-primary:focus {
+  /* verbatim .aOd.T-I:focus recipe */
+  background-color: var(--focus-bg);
+  box-shadow: var(--focus-ring) 0px 0px 0px 1px inset;
+}
+.chips {
+  display: flex;                               /* [E3] */
+  gap: var(--cell-pad-r);                      /* [E3] 10px spacing token */
+  padding: 0 24px var(--row-pad-v);            /* [E1]/[E3] */
+}
+.chip {
+  display: inline-flex;                        /* [E3] */
+  align-items: center;
+  height: var(--h-sidebar-item);
+  padding: 0 var(--cell-pad-r);                /* [E3] */
+  background: var(--search-bg);
+  color: var(--ink-header);
+  font-family: var(--font-text);
+  font-size: var(--fs-header-ctx);
+  border-radius: var(--radius-search);
+  cursor: pointer;
+}
+.chip.active {
+  background: var(--sidebar-active-bg);
+  color: var(--ink);
+}
+.rows { }
+.row {
+  display: flex;                               /* [E5] */
+  align-items: center;
+  gap: var(--cell-pad-r);                      /* [E5] */
+  padding: var(--row-pad-v) 24px;              /* vertical measured tr.zA; horizontal [E5] */
+  background: var(--row-unread-bg);
+  box-shadow: var(--row-divider) 0px -1px 0px 0px inset;  /* verbatim tr.zA divider */
+  border-radius: var(--radius-row);
+  cursor: pointer;
+}
+.row.resolved { background: var(--row-read-bg); }
+.row:hover {
+  /* verbatim .zA:hover recipe */
+  box-shadow: var(--hover-edge) 1px 0px 0px 0px inset, var(--hover-edge) -1px 0px 0px 0px inset,
+              var(--hover-shadow-a) 0px 1px 2px 0px, var(--hover-shadow-b) 0px 1px 3px 1px;
+  position: relative;                          /* [E5] z-index carrier (source rows are table rows) */
+  z-index: 2;                                  /* verbatim .zA:hover */
+}
+.who {
+  flex: 0 0 var(--col-sender);                 /* measured .zA .yX max-width */
+  font-size: var(--fs-row);
+  font-weight: var(--fw-bold);
+  color: var(--ink);
+  line-height: var(--lh-row);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;                     /* [E5] truncation scaffold */
+}
+.row.resolved .who { font-weight: var(--fw-regular); }
+.what {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-row);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-row);
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.what .st { color: var(--ink-secondary); }     /* [E6] status = snippet recipe */
+.when {
+  font-size: var(--fs-date);
+  font-weight: var(--fw-regular);
+  color: var(--ink);
+  line-height: var(--lh-row);
+  white-space: nowrap;
+}
+.row.resolved .when { color: var(--ink-secondary); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="panel-head">
+      <h1>Seguimientos</h1>
+      <div class="btn-primary" role="button" tabindex="0">Nuevo seguimiento</div>
+    </div>
+    <div class="chips">
+      <span class="chip active">Esperando respuesta</span>
+      <span class="chip">Para responder</span>
+      <span class="chip">Resueltos</span>
+    </div>
+    <div class="rows">
+      <div class="row">
+        <span class="who">Marta Ruiz</span>
+        <span class="what">Presupuesto rediseño web — <span class="st">enviado hace 3 días · sin respuesta</span></span>
+        <span class="when">4 jul</span>
+      </div>
+      <div class="row">
+        <span class="who">Jorge Peña</span>
+        <span class="what">Contrato de servicios (firma pendiente) — <span class="st">enviado hace 5 días · recordatorio programado</span></span>
+        <span class="when">2 jul</span>
+      </div>
+      <div class="row">
+        <span class="who">Lucía Andrade</span>
+        <span class="what">Propuesta sprint de julio — <span class="st">te respondió · pendiente de ti</span></span>
+        <span class="when">6 jul</span>
+      </div>
+      <div class="row resolved">
+        <span class="who">Estudio Vela</span>
+        <span class="what">Facturas Q2 — <span class="st">resuelto el lunes</span></span>
+        <span class="when">30 jun</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

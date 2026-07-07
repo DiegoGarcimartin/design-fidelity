@@ -1,0 +1,97 @@
+/* tokens.css — measured from https://mail.google.com/mail/u/0/#inbox (logged-in session,
+   light theme), 2026-07-07, method RENDERED: getComputedStyle via Chrome on live elements.
+   Citation format: [selector measured] — element. */
+:root {
+  /* ── Typography ─────────────────────────────────────────────── */
+  --font-ui: "Google Sans", Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+                                    /* body, tr.zA, [gh=cm], .TO — identical stack on all */
+  --font-text: "Google Sans Text", Roboto, Helvetica, Arial, sans-serif;
+                                    /* #gb header, #gb form (search) */
+  --fs-body: 16px;                  /* body, #gb input[type=text] */
+  --fs-row: 14px;                   /* .zF/.yP sender, .bog span subject, .y2 snippet, [gh=cm] label, .TO */
+  --fs-header-ctx: 13px;            /* #gb, #gb form */
+  --fs-date: 12px;                  /* .xW span (both read and unread rows) */
+  --fw-regular: 400;                /* read sender .yP, snippet, sidebar, dates */
+  --fw-medium: 500;                 /* [gh=cm] compose label */
+  --fw-bold: 700;                   /* unread sender .zF, unread subject .bog span */
+  --lh-row: 20px;                   /* .zF/.yP/.y2 line-height */
+  --lh-compose: 32px;               /* [gh=cm] line-height */
+  /* letter-spacing: normal on every element measured; text-transform: none everywhere */
+
+  /* ── Color ──────────────────────────────────────────────────── */
+  --bg-app: rgb(248, 250, 253);     /* body backgroundColor */
+  --surface-card: rgb(255, 255, 255);   /* div.nH main card */
+  --ink: rgb(32, 33, 36);           /* body color, senders, subjects, unread date */
+  --ink-secondary: rgb(95, 99, 104);/* .y2 snippet, read-row date .xW span */
+  --ink-header: rgb(31, 31, 31);    /* #gb, #gb form, search input */
+  --btn-primary-bg: rgb(194, 231, 255);  /* [gh=cm] compose backgroundColor */
+  --btn-primary-ink: rgb(0, 29, 53);     /* [gh=cm] compose color */
+  --row-read-bg: rgb(242, 246, 252);     /* tr.zA.yO (read row) backgroundColor */
+  --row-unread-bg: rgba(0, 0, 0, 0);     /* tr.zA.zE (unread row) — transparent over card */
+  --search-bg: rgb(233, 238, 246);       /* #gb form backgroundColor */
+  --sidebar-active-bg: rgb(211, 227, 253); /* .TO.nZ backgroundColor (not used in build; recorded) */
+  --row-divider: rgba(100, 121, 143, 0.12); /* tr.zA boxShadow: 0 -1px 0 0 inset */
+  --hover-edge: rgb(218, 220, 224);      /* .zA:hover inset 1px/-1px rule, stylesheet verbatim */
+  --hover-shadow-a: rgba(60, 64, 67, 0.3);  /* .zA:hover + .L3:hover shadow layer 1 */
+  --hover-shadow-b: rgba(60, 64, 67, 0.15); /* .zA:hover + .L3:hover shadow layer 2 */
+  --focus-bg: rgba(32, 33, 36, 0.12);    /* .aOd.T-I:focus backgroundColor, stylesheet verbatim */
+  --focus-ring: rgb(189, 193, 198);      /* .aOd.T-I:focus inset ring color */
+
+  /* ── Radius ─────────────────────────────────────────────────── */
+  --radius-card: 16px;              /* div.nH borderRadius */
+  --radius-btn: 16px;               /* [gh=cm] borderRadius */
+  --radius-search: 24px;            /* #gb form borderRadius */
+  --radius-row: 0px;                /* tr.zA borderRadius */
+  /* .TO sidebar pill: 0px 16px 16px 0px (recorded; not used in build) */
+
+  /* ── Dimensions & spacing ───────────────────────────────────── */
+  --h-header: 64px;                 /* #gb height */
+  --h-search: 48px;                 /* #gb form height */
+  --h-btn-primary: 56px;            /* [gh=cm] height */
+  --h-sidebar-item: 32px;           /* .TO height */
+  --row-pad-v: 10px;                /* tr.zA paddingTop/paddingBottom */
+  --cell-pad-r: 10px;               /* tr.zA td .xY paddingRight */
+  --btn-pad-r: 24px;                /* [gh=cm] paddingRight (paddingLeft measured 0px: icon slot) */
+  --card-w: 1200px;                 /* div.nH getBoundingClientRect width in situ */
+  --col-sender: 168px;              /* .zA .yX max-width computed; .yW rendered width 168.0px */
+
+  /* ── Motion (all measured, stylesheet/computed verbatim) ────── */
+  --t-btn: box-shadow 0.08s linear, min-width 0.15s cubic-bezier(0.4, 0, 0.2, 1); /* [gh=cm] */
+  --t-search: background 0.1s ease-in, width 0.1s ease-out;   /* #gb form */
+  --t-header: box-shadow 0.25s ease;                          /* #gb */
+  /* .TO: border-radius/margin/width 0.15s cubic-bezier(0.4,0,0.2,1) (recorded; not used) */
+
+  /* ── Hover/focus recipes (stylesheet rules, verbatim) ───────── */
+  /* row hover  : .zA:hover { box-shadow: rgb(218,220,224) 1px 0 0 inset, rgb(218,220,224) -1px 0 0 inset,
+                  rgba(60,64,67,.3) 0 1px 2px 0, rgba(60,64,67,.15) 0 1px 3px 1px; z-index: 2 } */
+  /* btn hover  : .z0>.L3:hover { box-shadow: rgba(60,64,67,.3) 0 1px 3px 0, rgba(60,64,67,.15) 0 4px 8px 3px;
+                  background-color: rgb(194,231,255) } */
+  /* btn focus  : .aOd.T-I:focus { background-color: rgba(32,33,36,.12); box-shadow: rgb(189,193,198) 0 0 0 1px inset } */
+
+  /* ── Scheme & absences (binding) ────────────────────────────── */
+  /* Serves LIGHT theme even with OS prefers-color-scheme: dark (measured: matchMedia dark=true,
+     body bg still 248,250,253). Dark variant NOT measured — do not fabricate one. */
+  /* ABSENCE: letter-spacing normal everywhere measured; no text-transform; no gradients on
+     measured elements; borders via box-shadow insets, not border properties, on rows. */
+  /* NOT LOCATED (rung-3 for these values — do not use): Gmail link blue, iconography metrics,
+     toolbar button hover, chip/tab styles of inbox tabs. */
+}
+
+/* EXTENSIONS — not in source; each derived from contract tokens + disclosed in handoff.
+   E1 page scaffold: standalone page centers the card; card max-width = --card-w (measured
+      in-situ 1200px); page vertical/horizontal padding = 24px = --btn-pad-r value class
+      (padding) reused in page role — cross-context reuse, itemized here.
+   E2 panel title: 16px + 700 + --ink. Both values contracted (--fs-body, --fw-bold) but the
+      combination exists on no single measured element (searched: header, rows, sidebar,
+      compose, search — no panel/page title pattern exists in the inbox view measured).
+   E3 filter chip: search-form recipe recombined (bg --search-bg, radius --radius-search,
+      13px --fs-header-ctx, --font-text) at --h-sidebar-item height (32px, .TO). Chip as a
+      component: searched inbox view — Gmail's own tabs/chips not measurable in this account
+      (tabs disabled); nearest measured pill patterns are search form + sidebar item.
+   E4 button without icon: compose paddingLeft measured 0px because of its icon slot; the
+      prototype button has NO icon, so padding-left: 24px mirrors the measured padding-right.
+   E5 row horizontal padding: source rows pad via cell structure (cells pad-right 10px,
+      checkbox/star cells omitted here); row padding-left/right: 24px mirrors --btn-pad-r
+      (same property class), replacing the omitted icon-cell rhythm.
+   E6 status line: reuses snippet recipe (--fs-row, --fw-regular, --ink-secondary) as a
+      second text row inside the row block — same values, new structural position. */
